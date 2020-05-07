@@ -1,5 +1,5 @@
-import pygame 
-import time
+import pygame
+import math
 
 pygame.init()
 visina = 1000
@@ -8,13 +8,18 @@ ekran = pygame.display.set_mode((sirina,visina))
 pygame.display.set_caption("Avtomobilcki")
 clock = pygame.time.Clock()
 
+# dokument za shranjevanje časov
+casi = open('casi.txt', 'w')
+casi.write('TUKAJ SO ZAPISANI ČASI: \n\n')
+casi.close()
+
 ikona = pygame.image.load("E:/SOLA/2.letnik/programiranje/Avtomobilcki/icona.png")
 pygame.display.set_icon(ikona)
 
 # AVTO
 avto_slika = pygame.image.load("E:/SOLA/2.letnik/programiranje/Avtomobilcki/car2.png")
 ob_slika = pygame.transform.rotate(avto_slika, 180)
-avtoX = 250
+avtoX = 250  # 250
 avtoY = 501
 avtoX_premik = 0
 avtoY_premik = 0
@@ -26,6 +31,12 @@ max_premikY = 6
 # koordinate proge
 proga1 = [(200,200),(600,200),(600,400),(800,400),(800,200),(1200,200),(1200,900),(700,900),(700,800),(200,800)]
 proga2 = [(350,350),(450,350),(450,550),(950,550),(950,350),(1050,350),(1050,750),(850,750),(850,650),(350,650)]
+ovira_koord = [(400,400),(400,600),(1000,600),(1000,400)]
+
+
+cas = [123]   #neko vlko stevilo, da lista ni prazna, ker če je nemore izračunat min
+st_krogov = 0
+stot = 0
 
 
 def avto(x,y):
@@ -54,9 +65,7 @@ def premikanje():
             ob_slika = pygame.transform.rotate(avto_slika, 0)
 
         if event.key == pygame.K_LEFT and event.key == pygame.K_UP:
-            ob_slika = pygame.transform.rotate(avto_slika, 225)
-           
-                
+            ob_slika = pygame.transform.rotate(avto_slika, 225)         
 
     if event.type == pygame.KEYUP:
         if event.key == pygame.K_LEFT:
@@ -72,59 +81,111 @@ def premikanje():
             avtoY_pos = 0
 
 
-st_krogov = 0
+
 def stetje_krogov():
-    global st_krogov, avtoX, avtoY
-    text_k = pygame.font.Font("freesansbold.ttf", 32)
-    txt_krog = text_k.render("Krog : " + str(st_krogov), True, (255,255,255))
-    ekran.blit(txt_krog, (50,50))
-
-    krog_x = range(200,350)
-    krog_y = range(450,550)
-
-                     # Zakaj ne dela če grem iz območja in nazaj v območje.
+    global st_krogov
     if event.type == pygame.KEYDOWN:
-        if avtoX == krog_x and avtoY == krog_y:
+        if avtoX in range(168,318) and avtoY in range(497,502) :
             st_krogov += 1
         #print(st_krogov)
 
+    
+    text_k = pygame.font.Font("freesansbold.ttf", 32)
+    txt_krog = text_k.render("Krog : " + str(st_krogov), True, (255,255,255))
+    ekran.blit(txt_krog, (50,50))
+    
 
-stot = 0
+
 def stoparca():  
-    global stot
+    global stot, st_krogov, cas
     if event.type == pygame.KEYDOWN:
         stot += 1
     elif event.type == pygame.KEYUP:
         stot += 1
 
-    if stot < 100:
-        napis = "0."+ str(stot)
-    else:
-        napis = str(stot)+"."+str(stot)                              # nedela ker int nemores zapisat [1:],    najti morem nov nacin kako int zapisati po stevilkah vsako posebej
+    napis = stot / 100
+    
+    casi = open('casi.txt', 'a')
+    if avtoX in range(168,318) and avtoY in range(497,502) and st_krogov != 0 :
+        
+        if stot < 440:
+            casi.write('Krog: '+str(st_krogov)+ '   GOLJUFATI NI LEPO !!!' + '   ('+ str(napis) +'s)'+'\n')
+        else:
+            casi.write('Krog: '+str(st_krogov)+ '   Čas: '+ str(napis) +'s\n')
+            cas.append(napis)
+        
+        stot = 0
 
+    # da najde najhitrejšega, append v listo časov        
+    naj_cas = min(cas)
+    naj_krog = cas.index(naj_cas) 
+    
+    # da izpiše najhitrejši čas samo na koncu dokumenta
+    if running == False:
+        casi.write('\n\nNAJHITREJŠI ČAS:\n')
+        casi.write('Krog: '+ str(naj_krog) + '   Čas: '+ str(naj_cas))
+        
+ 
     text_c = pygame.font.Font("freesansbold.ttf", 32)
-    txt_cas = text_c.render("Cas : " + napis + " s", True, (255,255,255))
+    txt_cas = text_c.render("Cas : " + str(napis) + " s", True, (255,255,255))
     ekran.blit(txt_cas, (50,100))
 
-    
-    
+  
+        
 
+    
 
 def proga():
-    zunanja = pygame.draw.aalines(ekran, (255,255,0), True, proga1, 1)
+    zunanja = pygame.draw.lines(ekran, (255,255,0), True, proga1, 1)
     notranja = pygame.draw.aalines(ekran, (255,255,0), True, proga2, 1)
     start_crta = pygame.draw.aaline(ekran, (255,255,255), (200,500), (350,500), 1) 
+    #ovira = pygame.draw.lines(ekran, (0,255,0), False, ovira_koord, 20) 
 
 
-def konec(x,y):
+def konec():
     global running, avtoX, avtoY
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_BACKSPACE:
             running = False
 
 
+def izven_proge():
+    global max_premikX, max_premikY
+    if avtoX in range(168,318) and avtoY in range(168,618):
+        max_premikX = 6
+        max_premikY = 6
+    elif avtoX in range(318,568) and avtoY in range(168,318):
+        max_premikX = 6
+        max_premikY = 6
+    elif avtoX in range(418,568) and avtoY in range(318, 518):
+        max_premikX = 6
+        max_premikY = 6
+    elif avtoX in range(568,768) and avtoY in range(368,518):
+        max_premikX = 6
+        max_premikY = 6
+    elif avtoX in range(768,918) and avtoY in range(318,518):
+        max_premikX = 6
+        max_premikY = 6
+    elif avtoX in range(768,1168) and avtoY in range(168,318):
+        max_premikX = 6
+        max_premikY = 6
+    elif avtoX in range(1018,1168) and avtoY in range(318,718):
+        max_premikX = 6
+        max_premikY = 6
+    elif avtoX in range(818,1168) and avtoY in range(718,868):
+        max_premikX = 6
+        max_premikY = 6
+    elif avtoX in range(668,818) and avtoY in range(618,868):
+        max_premikX = 6
+        max_premikY = 6
+    elif avtoX in range(168,668) and avtoY in range(618,768):
+        max_premikX = 6
+        max_premikY = 6
+    else:
+        max_premikX = 1.7
+        max_premikY = 1.7
 
-    
+
 
 
 
@@ -158,16 +219,17 @@ while running:
 
     avtoX += avtoX_premik
     avtoY += avtoY_premik
+    avtoX = round(avtoX)
+    avtoY = round(avtoY)
     #print(avtoX, avtoY)
 
-
-
-
     
-    konec(avtoX, avtoY)
+
+    izven_proge()
+    konec()
     proga()
     stoparca()
-    avto(avtoX, avtoY)
     stetje_krogov()
+    avto(avtoX, avtoY)
     pygame.display.update()
     clock.tick(100)         # 100 je zato, da se "cas" ujema z stotinkami
