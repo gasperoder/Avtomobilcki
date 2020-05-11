@@ -1,5 +1,4 @@
 import pygame
-import math
 
 pygame.init()
 visina = 1000
@@ -13,11 +12,11 @@ casi = open('casi.txt', 'w')
 casi.write('TUKAJ SO ZAPISANI ČASI: \n\n')
 casi.close()
 
-ikona = pygame.image.load("E:/SOLA/2.letnik/programiranje/Avtomobilcki/icona.png")
+ikona = pygame.image.load("icona.png")
 pygame.display.set_icon(ikona)
 
 # AVTO
-avto_slika = pygame.image.load("E:/SOLA/2.letnik/programiranje/Avtomobilcki/car2.png")
+avto_slika = pygame.image.load("car2.png")
 ob_slika = pygame.transform.rotate(avto_slika, 180)
 avtoX = 250  # 250
 avtoY = 501
