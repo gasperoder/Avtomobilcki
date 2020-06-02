@@ -262,49 +262,11 @@ def izven_proge():
         else:
             max_premikX = 1.7
             max_premikY = 1.7
-
-
-
-
-    
-
-
-'''
-def intro():
-    global menu, voznik
-    while menu:
-        ekran.fill((50,50,50))
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                menu = False
-
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    menu = False
-                if event.key == pygame.K_BACKSPACE:
-                    voznik = voznik[:-1]
-                else:
-                    voznik += event.unicode
-
-
-        text_v = pygame.font.Font("freesansbold.ttf", 40)
-        txt_voznik = text_v.render("Ime voznika: " + voznik, True, (255,255,255))
-        ekran.blit(txt_voznik, (500,450))
-
-        pygame.display.update()
-  ''' 
-
-    
+  
 
 
 while running:
-    '''
-    if menu == True:
-        intro()
-    '''
-    izven_proge()
-
+    
     ekran.fill((0,0,0))
 
     for event in pygame.event.get():
@@ -339,7 +301,7 @@ while running:
 
     
 
-    
+    izven_proge()
     konec()
     proga()
     stoparca()
