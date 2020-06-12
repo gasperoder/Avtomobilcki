@@ -309,12 +309,3 @@ while running:
     avto(avtoX, avtoY)
     pygame.display.update()
     clock.tick(100)         # 100 je zato, da se "cas" ujema z stotinkami
-
-
-
-
-# obracanje avta ko vozim postrani
-
-#na zacetko se vpise uporabnik, casi se shranijo pod njegovo ime
-# definiraj par prog
-# meni za izbiro prog in vpis imena
